@@ -1,1 +1,39 @@
+# Python
 venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# NetHunt output directories
+out/
+output/
+work_*/
+*_output/
+
+# Logs
+*.log
+*.json.tmp
+
+# PCAP files (uncomment if you don't want to track them)
+# *.pcap
+# *.pcapng
+
+# Suricata
+suricata.yaml
+minimal-suricata.yaml
+
+# Zeek
+.state/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
