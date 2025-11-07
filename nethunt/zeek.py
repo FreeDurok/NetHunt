@@ -12,8 +12,15 @@ from .utils import check_bin, is_executable
 
 
 def check_docker() -> bool:
-    """Check if Docker is available"""
-    return check_bin("docker") is not None
+    """Check if Docker is available and running"""
+    if check_bin("docker") is None:
+        return False
+    # Check if Docker daemon is actually running
+    try:
+        result = subprocess.run(["docker", "ps"], capture_output=True, check=False, timeout=5)
+        return result.returncode == 0
+    except (subprocess.TimeoutExpired, Exception):
+        return False
 
 
 def check_zeek_docker_image() -> bool:
@@ -77,16 +84,20 @@ def run_zeek_native(zeek_bin: str, pcap_path: pathlib.Path, work_dir: pathlib.Pa
         return False
 
 
-def run_zeek_docker(pcap_path: pathlib.Path, work_dir: pathlib.Path) -> bool:
-    """Run Zeek via Docker container"""
+def run_zeek_docker(pcap_path: pathlib.Path, work_dir: pathlib.Path) -> tuple[bool, str]:
+    """Run Zeek via Docker container
+
+    Returns:
+        Tuple of (success: bool, error_message: str)
+    """
     if not check_docker():
-        return False
+        return False, "Docker not available"
 
     if not check_zeek_docker_image():
         try:
             subprocess.run(["docker", "pull", ZEEK_DOCKER_IMAGE], check=True, capture_output=True)
         except subprocess.CalledProcessError:
-            return False
+            return False, "Failed to pull Docker image"
 
     # Prepare Docker command
     # Mount PCAP as read-only, work directory as read-write
@@ -108,7 +119,14 @@ def run_zeek_docker(pcap_path: pathlib.Path, work_dir: pathlib.Path) -> bool:
     ]
 
     try:
-        subprocess.run(docker_cmd, check=True, capture_output=True, text=True)
-        return True
-    except subprocess.CalledProcessError:
-        return False
+        result = subprocess.run(docker_cmd, check=True, capture_output=True, text=True)
+        return True, ""
+    except subprocess.CalledProcessError as e:
+        error_msg = ""
+        if e.stderr:
+            error_msg = e.stderr[:200]
+        elif e.stdout:
+            error_msg = e.stdout[:200]
+        else:
+            error_msg = f"Exit code {e.returncode}"
+        return False, error_msg

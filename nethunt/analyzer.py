@@ -99,10 +99,20 @@ def analyze(pcap, outdir, chunk=None):
         if use_zeek_docker:
             print("  → Running Zeek (Docker)...", end=" ", flush=True)
             pcap_to_analyze = pathlib.Path(p_abs)
-            if run_zeek_docker(pcap_to_analyze, work):
+            success, error_msg = run_zeek_docker(pcap_to_analyze, work)
+            if success:
                 print("✓")
             else:
-                print("✗ (failed)")
+                print(f"✗ (failed)")
+                if error_msg:
+                    print(f"     Error: {error_msg}")
+                # Try native Zeek as fallback
+                if zeek_native_bin:
+                    print("     Trying native Zeek as fallback...", end=" ", flush=True)
+                    if run_zeek_native(zeek_native_bin, pcap_to_analyze, work):
+                        print("✓")
+                    else:
+                        print("✗ (failed)")
         elif use_zeek_native:
             print("  → Running Zeek (native)...", end=" ", flush=True)
             pcap_to_analyze = pathlib.Path(p_abs)
