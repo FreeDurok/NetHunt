@@ -17,7 +17,8 @@ from .zeek import check_docker, check_zeek_docker_image, resolve_zeek_path, run_
 from .suricata import write_minimal_suricata_yaml, run_suricata
 from .tshark import export_objects
 from .parsers import parse_http_log, parse_dns_log, parse_ssl_log, deduplicate_files
-from .beaconing import detect_beacons
+from .beaconing import detect_beacons, detect_http_beacons
+from .domain_filter import filter_legitimate_traffic, classify_url
 from .report import generate_html_report
 
 
@@ -246,11 +247,23 @@ def analyze(pcap, outdir, chunk=None):
                 if r["sha256"] in meta_by_sha:
                     r.update({k: v for k, v in meta_by_sha[r["sha256"]].items() if v is not None})
 
-    # Detect beaconing
+    # Detect TCP-level beaconing
     beacons = detect_beacons(ts_by_pair)
 
+    # Filter legitimate traffic from HTTP requests
+    print("\n  → Filtering legitimate traffic...", end=" ", flush=True)
+    original_count = len(all_http_data["requests"])
+    filtered_requests = filter_legitimate_traffic(all_http_data["requests"], filter_level="all")
+    filtered_count = len(filtered_requests)
+    print(f"✓ (removed {original_count - filtered_count} legitimate requests)")
+
+    # Detect HTTP-level beaconing (C2 traffic patterns)
+    print("  → Detecting HTTP beaconing...", end=" ", flush=True)
+    http_beacons = detect_http_beacons(filtered_requests)
+    print(f"✓ (found {len(http_beacons)} patterns)")
+
     # Deduplicate files
-    print("\n  → Deduplicating files...", end=" ", flush=True)
+    print("  → Deduplicating files...", end=" ", flush=True)
     files_list = deduplicate_files(files_list)
     # Sort files by size (largest first)
     files_list.sort(key=lambda x: x.get('size', 0), reverse=True)
@@ -288,6 +301,7 @@ def analyze(pcap, outdir, chunk=None):
         "pcap": str(pcap_path),
         "pcap_size": pcap_path.stat().st_size,
         "beaconing": beacons,
+        "http_beaconing": http_beacons,
         "files": files_list,
         "http": http_report,
         "dns": dns_report,
@@ -295,7 +309,9 @@ def analyze(pcap, outdir, chunk=None):
         "statistics": {
             "total_files": len(files_list),
             "total_beacons": len(beacons),
+            "total_http_beacons": len(http_beacons),
             "total_http_requests": len(all_http_data["requests"]),
+            "filtered_http_requests": len(filtered_requests),
             "total_dns_queries": len(all_dns_data["queries"]),
             "total_ssl_connections": len(all_ssl_data["connections"]),
             "unique_urls": len(all_http_data["urls"]),
@@ -315,10 +331,11 @@ def analyze(pcap, outdir, chunk=None):
     print("Analysis Complete!")
     print(f"{'='*60}")
     print(f"Files extracted: {len(files_list)}")
-    print(f"HTTP requests: {len(all_http_data['requests'])}")
+    print(f"HTTP requests: {len(all_http_data['requests'])} ({len(filtered_requests)} after filtering)")
     print(f"DNS queries: {len(all_dns_data['queries'])}")
     print(f"TLS connections: {len(all_ssl_data['connections'])}")
-    print(f"Beacons detected: {len(beacons)}")
+    print(f"TCP beacons detected: {len(beacons)}")
+    print(f"HTTP beacons detected: {len(http_beacons)}")
     print(f"\nOutput directory: {OUT}")
     print("  • report.html - Interactive HTML report")
     print("  • report.json - Raw data in JSON format")

@@ -11,6 +11,7 @@ def generate_html_report(data: Dict[str, Any]) -> str:
 
     stats = data.get("statistics", {})
     beacons = data.get("beaconing", [])
+    http_beacons = data.get("http_beaconing", [])
     files = data.get("files", [])
     http = data.get("http", {})
     dns = data.get("dns", {})
@@ -21,10 +22,14 @@ def generate_html_report(data: Dict[str, Any]) -> str:
     for f in files[:100]:  # Limit to 100 files
         size_str = format_bytes(f.get("size", 0))
         sha = f.get("sha256", "")[:16]
+        full_path = f.get('path', 'N/A')
+        filename = full_path.split('/')[-1][:50]
+        # Make file path clickable with file:// protocol and add copy button
+        path_html = f'<a href="file://{full_path}" title="{full_path}" class="file-link">{filename}</a>'
         files_rows += f"""
         <tr>
             <td>{f.get('source', 'N/A')}</td>
-            <td class="monospace">{f.get('path', 'N/A').split('/')[-1][:50]}</td>
+            <td class="monospace">{path_html}</td>
             <td>{size_str}</td>
             <td class="monospace" title="{f.get('sha256', '')}">{sha}...</td>
             <td>{f.get('magic', 'N/A')}</td>
@@ -43,6 +48,25 @@ def generate_html_report(data: Dict[str, Any]) -> str:
             <td>{b.get('cv', 0):.3f}</td>
             <td>{b.get('events', 0)}</td>
             <td class="score">{b.get('score', 0):.2f}</td>
+        </tr>
+        """
+
+    # Build HTTP beaconing table
+    http_beacons_rows = ""
+    for hb in http_beacons[:50]:
+        methods_str = ", ".join(hb.get('methods', []))
+        sample_urls = hb.get('sample_urls', [])
+        sample_url_html = "<br>".join([f'<span style="font-size:0.85em">{url[:80]}</span>' for url in sample_urls[:2]])
+        http_beacons_rows += f"""
+        <tr>
+            <td class="monospace">{hb.get('host', 'N/A')}</td>
+            <td>{hb.get('interval_avg_s', 0):.2f}s</td>
+            <td>{hb.get('cv', 0):.3f}</td>
+            <td>{hb.get('events', 0)}</td>
+            <td>{methods_str}</td>
+            <td>{hb.get('post_requests', 0)}</td>
+            <td>{hb.get('unique_paths', 0)}</td>
+            <td class="score">{hb.get('score', 0):.2f}</td>
         </tr>
         """
 
@@ -234,6 +258,19 @@ def generate_html_report(data: Dict[str, Any]) -> str:
             text-decoration: underline;
         }}
 
+        .file-link {{
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 1px dashed #667eea;
+        }}
+
+        .file-link:hover {{
+            color: #764ba2;
+            border-bottom: 1px solid #764ba2;
+        }}
+
         .alert {{
             background: #fff3cd;
             border-left: 4px solid #ffc107;
@@ -303,18 +340,22 @@ def generate_html_report(data: Dict[str, Any]) -> str:
                 <div class="value">{stats.get('unique_urls', 0)}</div>
             </div>
             <div class="stat-card">
-                <h3>Beacons Detected</h3>
+                <h3>TCP Beacons</h3>
                 <div class="value">{stats.get('total_beacons', 0)}</div>
+            </div>
+            <div class="stat-card">
+                <h3>HTTP Beacons</h3>
+                <div class="value">{stats.get('total_http_beacons', 0)}</div>
             </div>
         </div>
 
         <div class="content">
-            <!-- Beaconing Section -->
+            <!-- TCP Beaconing Section -->
             {f'''
             <div class="section">
-                <h2>🚨 Beaconing Detection (Malware C2)</h2>
+                <h2>🚨 TCP Beaconing Detection (Malware C2)</h2>
                 <div class="alert danger">
-                    <strong>⚠️ Warning:</strong> {len(beacons)} potential beacon(s) detected. This may indicate Command & Control (C2) activity.
+                    <strong>⚠️ Warning:</strong> {len(beacons)} potential TCP beacon(s) detected. This may indicate Command & Control (C2) activity.
                 </div>
                 <table>
                     <thead>
@@ -329,11 +370,42 @@ def generate_html_report(data: Dict[str, Any]) -> str:
                         </tr>
                     </thead>
                     <tbody>
-                        {beacons_rows if beacons_rows else '<tr><td colspan="7" style="text-align:center;">No beaconing detected</td></tr>'}
+                        {beacons_rows if beacons_rows else '<tr><td colspan="7" style="text-align:center;">No TCP beaconing detected</td></tr>'}
                     </tbody>
                 </table>
             </div>
             ''' if beacons else ''}
+
+            <!-- HTTP Beaconing Section -->
+            {f'''
+            <div class="section">
+                <h2>🔴 HTTP C2 Beaconing Detection</h2>
+                <div class="alert danger">
+                    <strong>⚠️ Critical:</strong> {len(http_beacons)} HTTP beacon pattern(s) detected! Regular HTTP requests suggest C2 communication.
+                </div>
+                <p style="margin-bottom: 15px;">
+                    <strong>About HTTP Beaconing:</strong> Malware often communicates with Command & Control servers using regular HTTP requests at periodic intervals.
+                    Repeating JSON responses and POST requests with base64 data are common indicators of C2 traffic.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Host</th>
+                            <th>Avg Interval</th>
+                            <th>CV</th>
+                            <th>Events</th>
+                            <th>Methods</th>
+                            <th>POST Reqs</th>
+                            <th>Unique Paths</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {http_beacons_rows if http_beacons_rows else '<tr><td colspan="8" style="text-align:center;">No HTTP beaconing detected</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+            ''' if http_beacons else ''}
 
             <!-- Extracted Files Section -->
             <div class="section">
