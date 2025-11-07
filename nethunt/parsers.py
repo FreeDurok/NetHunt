@@ -26,7 +26,8 @@ def parse_http_log(log_path: pathlib.Path) -> Dict[str, Any]:
                 r = json.loads(line)
             except Exception:
                 continue
-            if r.get("_path") != "http":
+            # Skip if _path exists and is not http (for compatibility)
+            if "_path" in r and r.get("_path") != "http":
                 continue
 
             method = r.get("method", "")
@@ -83,7 +84,8 @@ def parse_dns_log(log_path: pathlib.Path) -> Dict[str, Any]:
                 r = json.loads(line)
             except Exception:
                 continue
-            if r.get("_path") != "dns":
+            # Skip if _path exists and is not dns (for compatibility)
+            if "_path" in r and r.get("_path") != "dns":
                 continue
 
             query = r.get("query", "")
@@ -127,7 +129,8 @@ def parse_ssl_log(log_path: pathlib.Path) -> Dict[str, Any]:
                 r = json.loads(line)
             except Exception:
                 continue
-            if r.get("_path") != "ssl":
+            # Skip if _path exists and is not ssl (for compatibility)
+            if "_path" in r and r.get("_path") != "ssl":
                 continue
 
             server_name = r.get("server_name", "")

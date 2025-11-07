@@ -150,7 +150,8 @@ def analyze(pcap, outdir, chunk=None):
                         r = json.loads(line)
                     except Exception:
                         continue
-                    if r.get("_path") != "conn":
+                    # Skip if _path exists and is not conn (for compatibility)
+                    if "_path" in r and r.get("_path") != "conn":
                         continue
                     src, dst = r.get("id.orig_h"), r.get("id.resp_h")
                     dport, ts = r.get("id.resp_p"), r.get("ts")
