@@ -1,0 +1,17 @@
+%YAML 1.1
+---
+default-log-dir: .
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types: [alert, flow, http, tls, dns, ftp, smb]
+
+file-store:
+  version: 2
+  enabled: yes
+  dir: files
+  write-fileinfo: yes
+  force-magic: yes
+  force-hash: [sha256]

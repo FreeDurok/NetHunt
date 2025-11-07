@@ -1,0 +1,391 @@
+{
+  "generated_at": "2025-11-07T09:35:17.655703+00:00",
+  "pcap": "/home/user/sec-projects/NetHunt/2025-06-13-traffic-analysis-exercise.pcap",
+  "beaconing": [],
+  "files": [
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/eo7zfb61GX",
+      "sha256": "7a94a74299f0e837c9df59b106451183f189569c01fc36072158908034a8b5f8",
+      "size": 30521
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/o04Cpg8w",
+      "sha256": "bd3a82eb1f612be50f8b72121efdf1ace6e4538d043fba24ba39cdc0f8f4bc73",
+      "size": 30514
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/anNgUtfcNXv",
+      "sha256": "f4f6bd75760b3ab4cf76a23e42b90a42adf1deb511e032e1e4990cb12f3df8c5",
+      "size": 30523
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/YY0I3",
+      "sha256": "18bef6d684def5209ff2fbab46c793192a9aa85611ed5aab5a38d009f864915c",
+      "size": 30524
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/7rVMDKKhNQ1E",
+      "sha256": "d0342c30a772f0b3228e433c66acf6a65405a51e7807272dd82464c5bdc91d24",
+      "size": 30527
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/mKbbY1",
+      "sha256": "580381b8c19c950b361f86b6362bc60a74225ea9bea99d5b7652ccecae1d235c",
+      "size": 30534
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/2wdu",
+      "sha256": "4721a83a5089ebc8adb8077c628957ab1891d36255e4dc43c8cf1818a8583003",
+      "size": 30532
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/5S",
+      "sha256": "e0fe1fbd2e2bd11116b193a74bf8889e3963fbd5b534ec72d090186f869408a7",
+      "size": 30522
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/YlT5PRyDRvCp",
+      "sha256": "1f9ccbeecb82d8689eed81500a8804b2ccc435458212a4d18efc1d69c6d03c14",
+      "size": 30527
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/vo6cqHO2",
+      "sha256": "75bec75a3ba62b7f91fce61bb4e47461bb5c79ddfe0d87c79e9ea536c11616ff",
+      "size": 30528
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/wU",
+      "sha256": "325a7198b01f5845e4753e567690a619731a700113d952e768246ad00f8fde2d",
+      "size": 30528
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/ofJqoxoJi28",
+      "sha256": "1a010f22cd6de34da3f86273669a269121fb411b8752e7c0f3b9feb333da44fc",
+      "size": 30522
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/EipT8J",
+      "sha256": "1bb9c3c6fb445e218779b679c76752e91795c44cab14ff001e37d9de27676ace",
+      "size": 30536
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/oItLdRe",
+      "sha256": "aaba18b0dec70025ecd16a947c4a775a655faf6792fba2f1adbf6d8eaceee18f",
+      "size": 30490
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/N5fF3Zm4giEciT&152451b81314499d524cf03c772ba1de",
+      "sha256": "eb109aba4ef5d687fb7557cb3a6722fe69ff3224341ab521deca9754fdfa9934",
+      "size": 30527
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/G45l",
+      "sha256": "b43859e9d538530ecb6b8e6517b0e648ae788d7ac699b3235a266f289a7384e0",
+      "size": 30524
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/Sjs6N",
+      "sha256": "ff8807b2e03385f5b65ead0b9e950e3777b0916f7f9a60983c8aedeb15ef8f72",
+      "size": 30520
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/95rep&31205efb7d9469b1852377d9e86394ad",
+      "sha256": "b730673b3d8643c2572c2f0ea25685bf3190fa53674b21824dc6ecf669c99246",
+      "size": 30502
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/r",
+      "sha256": "3944c8eb71eaa26f08aca743ecb3368af3bb2463c616abad61d52d045308a011",
+      "size": 30507
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/NV4RgNEu(1)",
+      "sha256": "9e2f538ca158d67ab3572080cf575ab21c0373ba05d19ce8794fcb3665fb7acf",
+      "size": 991303
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/U",
+      "sha256": "2baf1dd69b1fdd7210a5b7ccf7054fe5e56f298c6bc30902076de8c5fc6543b4",
+      "size": 30524
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/b",
+      "sha256": "e55352c0c43ba43b6f9812ef7573c124d8196ee5cb32e207bb8637d27d717b94",
+      "size": 30518
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/zh0GPFZdKt",
+      "sha256": "1332433fbcea805d83cb8f00c4b1e5063d264389403b3e37ebce18d41c17e7ec",
+      "size": 5485
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/GEtO7FjQN8",
+      "sha256": "c5a0d8b4704c13513b67a1edf959164121ba493c58a9a937abec0ccb8358b2b4",
+      "size": 30532
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/A4TJKvs",
+      "sha256": "7ae0b2b33d7b595a33b2365370959b3a02c3a94077f3ab03377d3d64329bc6dc",
+      "size": 30530
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/Hkht6bQMmX",
+      "sha256": "4f46087652991ec1233367ad02f852c5897ee7456ca16b82454377df0fedccc5",
+      "size": 30527
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/McDoVAqd",
+      "sha256": "650631f8bd89c65ce5a16cd3ff09fb603659ff790d5c1f6bd77426b78a5df198",
+      "size": 30534
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/KULxVGwNv5x",
+      "sha256": "0e6dc7698b5b85d58ecf1db6de9d2d26adae080c504822f56e08ad7352e6e3e9",
+      "size": 30529
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/Qw4nz",
+      "sha256": "13c698a4c881b0ee95d30e9d20671083223ae42c9779dcf819d0072e6bf84c66",
+      "size": 30529
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/ufyWawws",
+      "sha256": "138e5e166edefef373be789df14bd9c3eed2c9343902c17a316c4095e2f4fde4",
+      "size": 30520
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/DLcY4Uy67&2907b1c81fd42d9151d62854790e73dc",
+      "sha256": "c2e21dee81b70298462191dfc307c5536d5382af55fc8b8e12ba1145399201de",
+      "size": 30526
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/WjJSOMS7tpFmS",
+      "sha256": "fabc83de2abc842a38a0fedd5d742c3f3179c9a609e401b3719e52821f132570",
+      "size": 30530
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/j3sDojrmG",
+      "sha256": "27ca5234006ac55805c468dce65009338deda0955aa589f81006ce43c611f095",
+      "size": 30523
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/I23Ll",
+      "sha256": "a0102d2dfdf9f604c5dce7020abea132ee600ff736e28a6f8a806057ec75b32a",
+      "size": 30535
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/Go4whW0sne",
+      "sha256": "7c027003af4670e7b52a2345778f855bc034bb1eb5d1a1aca7653ca9d354f31d",
+      "size": 30534
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/dMhL",
+      "sha256": "744fd6f8f668a262df315259c9d9d513efb5f346325071dd5576b29372897bd7",
+      "size": 30532
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/XXaIX3",
+      "sha256": "9fce2d5d2c076560fe0bdb09c64b90b0ee860b18214c6da1082a4fa8815c5ddf",
+      "size": 30496
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/I3",
+      "sha256": "db6d73b27e10392f1275d9d5b479e0c13792067a9e2a025e45030e7a8f80e1a0",
+      "size": 30532
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/aVO65eLBJkt2Tn&d120b0d80e343591742fa2c82d99671d",
+      "sha256": "53716740f6b82281587d249b925d60a77973f08fb9dfef7df1411fe6b0cfa5bb",
+      "size": 30520
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/ieIMojFvTYX3",
+      "sha256": "c2b3ae0298ba65114538d4bc2b9f3be6e7535b9f89d073d2703c5ad58a145062",
+      "size": 30490
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/gMC6gy0T",
+      "sha256": "7888997c8f73c0de793a68e416e30d56eea6f7746b2d7e83d08ccc45a4bbadd7",
+      "size": 30517
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/FH1CCNR",
+      "sha256": "ab0be742a01e49bd78ba8a53d853d0ed870e81ec5bdc73adf72d2c6f1ab89699",
+      "size": 30519
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/Eg",
+      "sha256": "6088feed5fd623ef343146878b81fb1fdd85302a1cbcdda79aecc06ddf01b4af",
+      "size": 30514
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/LHj",
+      "sha256": "19a0e42805a5640ff5383884fc0f79ad1fd41d8485ef3ce30907b7ccd9f24736",
+      "size": 30518
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/WTM5Lh4r&34c49148ff344d91caf59e07011ba39c",
+      "sha256": "38b60c364139be939c978d2a5ada2ffc59e96bd51a13c1a962677d0d2b17686c",
+      "size": 30519
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/l88",
+      "sha256": "167d9348074d4f2b42e16520d6d5edeaa4a769361445a9a63ed8b649dc2d96a0",
+      "size": 30505
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/eKOYpnnbTV3",
+      "sha256": "5161058658a2efbadce669e623905494d2b594089b0f995d889284885a272d47",
+      "size": 30520
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/FwtKu",
+      "sha256": "ab81b7fbfafbdff72ddb798dc16d6b5293a619bb9ce539e660dfa8a126af5f42",
+      "size": 30515
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/IvKcKKj",
+      "sha256": "bdc565b8b928809b8b6f0e7c7e53d6baba992c5ea0b472c7e70f8dbf6e1f2d9b",
+      "size": 30515
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/zO0WeLN5IQD",
+      "sha256": "3f38460563073ec78e94be62085bedc89abdd664f2e8c69b627d45a7f799dcae",
+      "size": 30521
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/9cu",
+      "sha256": "301431d89ed1213551538468a4a29959440f01dd96c78a6b8ef08fbb210307a7",
+      "size": 30507
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/0",
+      "sha256": "3363c2e357e2d659b5f9f6f35bf3a645be0f7670ad6ec2a77681eea76d922805",
+      "size": 30504
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/te1ijgh4wA",
+      "sha256": "0041c17767c79ec17c2672ecc2ec316172c90e04546a9a90f297ad83fc0a6125",
+      "size": 30529
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/bxS8Fjsz",
+      "sha256": "d9266b198b0d7cbfc075fc7a4f1d40de3dbd7d6cb79d62c9a7ec09efc16bb432",
+      "size": 30494
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/8OliyIgoH",
+      "sha256": "724ffbd37471042977062da86a0c0beb63d7bb9247f8257b892fa85e8c3dd79c",
+      "size": 30528
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/mPF2uwY27hew2E",
+      "sha256": "8c7971cf61f24180c18cb006db4affa93329b45bc4cc9bd5a6a5e3f4ed436bb8",
+      "size": 30528
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/eF1h6XNI",
+      "sha256": "0540c813dbc04d7eb0f0a8c45002f6e537ec251a159ee526e2c8bb02f1c0d415",
+      "size": 30506
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/kBQ4lU",
+      "sha256": "09d079fe4cd5ccba7a4d7459530ccde14f461ddc28ab76be76419f375df3bf59",
+      "size": 30523
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/PACARK&153dd0f87db47da5573134d960d99be3",
+      "sha256": "717a4d516410d7d3c33d8b8526ed58f948e565cde689f20d3266f0c5cafdd1e6",
+      "size": 30517
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/R5n6W",
+      "sha256": "d3ac6c1ef446e4f32a18ed4bbe7a5f2c7ba9c6dcd7ef984c01e77c9c160c0a22",
+      "size": 30496
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/2i",
+      "sha256": "27c0b1b2fcdf714fc5748e9f9ef7b40e2b94be77a72a1cfbc17f378edbbd2e24",
+      "size": 30525
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/X2f5k",
+      "sha256": "a90fe74ce1ff41de8865eaa0bafe165c87f9710d9d002fc53ce8f729b00a377d",
+      "size": 30500
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/0QyDQ",
+      "sha256": "2cff5fc11cb3679401656d45881237939adb65606e4fff424a094d81c81a6586",
+      "size": 30535
+    },
+    {
+      "source": "tshark_http",
+      "path": "/home/user/sec-projects/NetHunt/out/work_1/export_http/DXxdup5",
+      "sha256": "3d5b36f1782974f21194c1a766c08835599fdfcc1899a0df29897edcf8fb23c9",
+      "size": 30528
+    }
+  ]
+}
