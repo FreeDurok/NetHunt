@@ -43,14 +43,31 @@ outputs:
       enabled: yes
       filetype: regular
       filename: eve.json
-      types: [alert, flow, http, tls, dns, ftp, smb, fileinfo]
+      types:
+        - alert:
+            enabled: yes
+        - http:
+            enabled: yes
+            extended: yes
+        - dns:
+            enabled: yes
+        - tls:
+            enabled: yes
+        - files:
+            enabled: yes
+            force-magic: yes
+            force-hash: [sha256]
+        - smtp:
+            enabled: yes
+        - ssh:
+            enabled: yes
+        - flow:
+            enabled: yes
 
 file-store:
-  version: 2
   enabled: yes
-  dir: files
-  write-fileinfo: yes
-  force-magic: yes
+  log-dir: files
+  force-filestore: yes
   force-hash: [sha256]
 """)
 
@@ -793,15 +810,23 @@ def analyze(pcap, outdir, chunk=None):
         else:
             print("[WARN] Skip Zeek (Docker not available)")
 
-        # --- SURICATA (EVE + filestore v2 via YAML) ---
+        # --- SURICATA (EVE + filestore via YAML) ---
         eve_dir = work / "suricata"; safe_mkdir(eve_dir)
         if suricata:
             cfg = eve_dir.parent / "minimal-suricata.yaml"
             write_minimal_suricata_yaml(cfg)
-            ensure_file_readable(cfg, "Suricata YAML")
-            # Test config locale per evitare errori a runtime
-            run(["suricata", "-T", "-c", str(cfg), "-l", str(eve_dir)])
-            run(["suricata", "-r", p_abs, "-l", str(eve_dir), "-k", "none", "-c", str(cfg)])
+            try:
+                # Test config
+                subprocess.run(["suricata", "-T", "-c", str(cfg), "-l", str(eve_dir)],
+                             check=True, capture_output=True, text=True)
+                # Run analysis
+                print(f"[CMD] suricata -r {p_abs}")
+                subprocess.run(["suricata", "-r", p_abs, "-l", str(eve_dir), "-k", "none", "-c", str(cfg)],
+                             check=True, capture_output=True, text=True)
+            except subprocess.CalledProcessError as e:
+                print(f"[WARN] Suricata fallito: {e.returncode}")
+                if e.stderr:
+                    print(f"[WARN] Error: {e.stderr[:200]}")
         else:
             print("[WARN] Skip Suricata (binario non trovato)")
 
