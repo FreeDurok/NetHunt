@@ -15,10 +15,10 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-echo "[1/6] Updating package lists..."
+echo "[1/7] Updating package lists..."
 apt-get update -qq
 
-echo "[2/6] Installing Docker (for Zeek)..."
+echo "[2/7] Installing Docker (for Zeek)..."
 if ! command -v docker &> /dev/null; then
     echo "  Installing Docker..."
     apt-get install -y docker.io
@@ -29,19 +29,43 @@ else
     echo "  ✓ Docker already installed"
 fi
 
-echo "[3/6] Pulling Zeek Docker image..."
+echo "[3/7] Pulling Zeek Docker image..."
 docker pull zeek/zeek:latest
 echo "  ✓ Zeek image ready"
 
-echo "[4/6] Installing Suricata (IDS/IPS)..."
+echo "[4/7] Installing Suricata (IDS/IPS)..."
 apt-get install -y suricata
 
-echo "[5/6] Installing Tshark (Wireshark CLI)..."
+echo "[5/7] Installing Tshark (Wireshark CLI)..."
 apt-get install -y tshark wireshark-common
 
-echo "[6/6] Installing tcpflow (TCP stream reconstruction)..."
+echo "[6/7] Installing tcpflow (TCP stream reconstruction)..."
 apt-get install -y tcpflow
 echo "  ✓ tcpflow installed - ensures complete file extraction from streams"
+
+echo "[7/7] Installing RITA (Real Intelligence Threat Analytics)..."
+if ! command -v rita &> /dev/null; then
+    echo "  Downloading RITA installer..."
+    RITA_VERSION="v5.1.0"
+    RITA_INSTALLER="rita-${RITA_VERSION}-installer.tar.gz"
+
+    cd /tmp
+    wget -q "https://github.com/activecm/rita/releases/download/${RITA_VERSION}/${RITA_INSTALLER}" -O "${RITA_INSTALLER}"
+
+    if [ -f "${RITA_INSTALLER}" ]; then
+        echo "  Extracting and installing RITA..."
+        tar -xzf "${RITA_INSTALLER}"
+        cd "rita-${RITA_VERSION}-installer"
+        ./install_rita.sh localhost
+        cd /tmp
+        rm -rf "rita-${RITA_VERSION}-installer" "${RITA_INSTALLER}"
+        echo "  ✓ RITA installed"
+    else
+        echo "  ✗ RITA download failed - skipping (optional)"
+    fi
+else
+    echo "  ✓ RITA already installed"
+fi
 
 # Add current user to docker group (if not root)
 if [ -n "$SUDO_USER" ]; then
@@ -63,6 +87,7 @@ echo "  - Zeek (Docker): $(docker images zeek/zeek --format '{{.Repository}}:{{.
 echo "  - Suricata: $(which suricata 2>/dev/null || echo 'Not in PATH')"
 echo "  - Tshark: $(which tshark 2>/dev/null || echo 'Not in PATH')"
 echo "  - tcpflow: $(which tcpflow 2>/dev/null || echo 'Not in PATH')"
+echo "  - RITA: $(which rita 2>/dev/null || echo 'Not in PATH')"
 echo ""
 echo "Testing Zeek Docker container..."
 if docker run --rm zeek/zeek:latest --version 2>/dev/null | grep -q "zeek version"; then
