@@ -18,11 +18,13 @@ NetHunt analizza file PCAP e fornisce:
 
 NetHunt integra i seguenti tool di analisi:
 
-| Tool | Scopo |
-|------|-------|
-| **Zeek** | Network Security Monitor - logging dettagliato e estrazione file |
-| **Suricata** | IDS/IPS - detection engine con EVE JSON logging |
-| **Tshark** | Wireshark CLI - export di oggetti HTTP/FTP/SMB |
+| Tool | Scopo | Deployment |
+|------|-------|------------|
+| **Zeek** | Network Security Monitor - logging dettagliato e estrazione file | Docker 🐳 |
+| **Suricata** | IDS/IPS - detection engine con EVE JSON logging | Native |
+| **Tshark** | Wireshark CLI - export di oggetti HTTP/FTP/SMB | Native |
+
+**Nota:** Zeek viene eseguito tramite Docker per semplificare l'installazione su Kali Linux, dove la compilazione nativa può essere complessa.
 
 ## 📦 Installazione
 
@@ -43,7 +45,18 @@ python3 net-hunt.py --help
 
 ```bash
 sudo apt update
-sudo apt install -y zeek suricata tshark wireshark-common
+
+# Installa Docker per Zeek
+sudo apt install -y docker.io
+sudo systemctl enable docker && sudo systemctl start docker
+sudo docker pull zeek/zeek:latest
+
+# Installa gli altri tool
+sudo apt install -y suricata tshark wireshark-common
+
+# Aggiungi il tuo utente al gruppo docker
+sudo usermod -aG docker $USER
+# Logout e login per applicare le modifiche
 ```
 
 ## 🚀 Utilizzo
@@ -57,26 +70,29 @@ python3 net-hunt.py capture.pcap -o output
 ### Opzioni Avanzate
 
 ```bash
-# Specifica percorso Zeek custom
-python3 net-hunt.py capture.pcap -o output --zeek /opt/zeek/bin/zeek
-
 # Chunking per PCAP grandi (divide in blocchi da 5000 pacchetti)
 python3 net-hunt.py large.pcap -o output --chunk 5000
+
+# Specificare directory di output personalizzata
+python3 net-hunt.py capture.pcap -o /path/to/analysis_results
 ```
 
 ### Parametri
 
 ```
-usage: net-hunt.py [-h] [-o OUT] [--chunk CHUNK] [--zeek ZEEK] pcap
+usage: net-hunt.py [-h] [-o OUT] [--chunk CHUNK] pcap
+
+NetHunt: Advanced PCAP analysis with beaconing detection, file extraction, and comprehensive reporting
 
 positional arguments:
-  pcap           Percorso file PCAP da analizzare
+  pcap           Path to PCAP file to analyze
 
 optional arguments:
-  -h, --help     Mostra questo messaggio di aiuto
-  -o, --out OUT  Directory di output (default: out)
-  --chunk CHUNK  Divide PCAP in chunk da N pacchetti
-  --zeek ZEEK    Percorso binario zeek se non in PATH
+  -h, --help     Show this help message and exit
+  -o, --out OUT  Output directory (default: out)
+  --chunk CHUNK  Split PCAP into chunks of N packets (requires editcap)
+
+Zeek runs via Docker for easy deployment on Kali Linux. Ensure Docker is installed: sudo ./install-tools.sh
 ```
 
 ## 📂 Output
@@ -163,14 +179,48 @@ Il report HTML mostra:
 
 ## 🔧 Troubleshooting
 
-### Zeek non trovato
+### Docker non disponibile
 
 ```bash
-# Opzione 1: Specifica il percorso
-python3 net-hunt.py capture.pcap --zeek /opt/zeek/bin/zeek
+# Installa Docker
+sudo apt install docker.io
+sudo systemctl start docker
 
-# Opzione 2: Aggiungi al PATH
-export PATH=$PATH:/opt/zeek/bin
+# Verifica installazione
+docker --version
+
+# Aggiungi utente al gruppo docker per evitare sudo
+sudo usermod -aG docker $USER
+# Logout e login per applicare
+```
+
+### Zeek Docker non funziona
+
+```bash
+# Verifica che Docker sia in esecuzione
+sudo systemctl status docker
+
+# Scarica manualmente l'immagine Zeek
+docker pull zeek/zeek:latest
+
+# Testa l'immagine
+docker run --rm zeek/zeek:latest --version
+
+# Se ci sono problemi di permessi
+sudo chmod 666 /var/run/docker.sock  # Temporaneo, o aggiungi utente al gruppo docker
+```
+
+### Errore "permission denied" con Docker
+
+```bash
+# Soluzione permanente: aggiungi utente al gruppo docker
+sudo usermod -aG docker $USER
+
+# Poi logout/login, oppure:
+newgrp docker
+
+# Soluzione temporanea: usa sudo
+sudo python3 net-hunt.py capture.pcap -o output
 ```
 
 ### Suricata non funziona
@@ -190,12 +240,26 @@ sudo apt install --reinstall suricata
 python3 net-hunt.py large.pcap -o output --chunk 10000
 ```
 
+### Container Docker rimane in esecuzione
+
+NetHunt usa `--rm` per rimuovere automaticamente i container, ma se qualcosa va storto:
+
+```bash
+# Lista container in esecuzione
+docker ps
+
+# Ferma tutti i container Zeek
+docker stop $(docker ps -q --filter ancestor=zeek/zeek:latest)
+```
+
 ## 📝 Note
 
+- **Docker**: Zeek viene eseguito in container Docker isolato per semplicità e sicurezza
 - **File duplicati**: NetHunt rimuove automaticamente file duplicati basandosi su hash SHA256
 - **File vuoti**: I file di dimensione 0 vengono automaticamente scartati
 - **Privacy**: Tutti i dati rimangono locali, nessun upload verso servizi esterni
 - **Performance**: Per PCAP > 1GB, usa l'opzione `--chunk` per migliorare le prestazioni
+- **Permessi**: Se Docker richiede sudo, aggiungi il tuo utente al gruppo docker (vedi Troubleshooting)
 
 ## 🎓 Risorse
 

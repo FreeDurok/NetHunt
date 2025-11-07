@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # net-hunt.py — Advanced PCAP analysis with beaconing, file carving, URL extraction, DNS analysis and HTML reporting
+# Uses Zeek via Docker for easier deployment on Kali Linux
 import argparse, json, statistics, hashlib, shutil, subprocess, sys, pathlib, os, re, base64
 from collections import defaultdict, Counter
 from datetime import datetime, timezone
@@ -7,8 +8,9 @@ from typing import Optional, Dict, List, Any
 from urllib.parse import urlparse
 
 # === CONFIG EDITABILE ===
-# Imposta qui il percorso di Zeek se fuori PATH (override da CLI --zeek o env ZEEK_PATH / ZEEK).
-ZEEK_PATH: Optional[str] = "/opt/zeek/bin/zeek" #  os.getenv("ZEEK_PATH")  # es: "/opt/zeek/bin/zeek"
+# Docker image for Zeek
+ZEEK_DOCKER_IMAGE = "zeek/zeek:latest"
+USE_DOCKER_ZEEK = True  # Set to False to use local Zeek installation
 
 # ---------- util ----------
 def check_bin(name):
@@ -52,33 +54,65 @@ file-store:
   force-hash: [sha256]
 """)
 
-def resolve_zeek_path(user_zeek: Optional[str]) -> Optional[str]:
-    # Priorità: CLI -> variabile globale ZEEK_PATH -> env ZEEK_PATH -> env ZEEK -> PATH -> location note
-    candidates = []
-    if user_zeek:
-        candidates.append(user_zeek)
-    if ZEEK_PATH:
-        candidates.append(ZEEK_PATH)
-    if os.getenv("ZEEK_PATH"):
-        candidates.append(os.getenv("ZEEK_PATH"))
-    if os.getenv("ZEEK"):
-        candidates.append(os.getenv("ZEEK"))
-    w = check_bin("zeek")
-    if w:
-        candidates.append(w)
-    candidates.extend([
-        "/opt/zeek/bin/zeek",
-        "/usr/local/zeek/bin/zeek",
-        "/usr/local/bin/zeek",
-        "/usr/bin/zeek",
-    ])
-    for c in candidates:
-        if not c:
-            continue
-        p = pathlib.Path(c)
-        if is_executable(p):
-            return str(p)
-    return None
+def check_docker() -> bool:
+    """Check if Docker is available"""
+    return check_bin("docker") is not None
+
+def check_zeek_docker_image() -> bool:
+    """Check if Zeek Docker image is available"""
+    try:
+        result = subprocess.run(
+            ["docker", "images", "-q", ZEEK_DOCKER_IMAGE],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        return len(result.stdout.strip()) > 0
+    except Exception:
+        return False
+
+def run_zeek_docker(pcap_path: pathlib.Path, work_dir: pathlib.Path) -> bool:
+    """Run Zeek via Docker container"""
+    if not check_docker():
+        print("[ERROR] Docker not found. Please install Docker first.")
+        return False
+
+    if not check_zeek_docker_image():
+        print(f"[INFO] Pulling Zeek Docker image: {ZEEK_DOCKER_IMAGE}")
+        try:
+            subprocess.run(["docker", "pull", ZEEK_DOCKER_IMAGE], check=True)
+        except subprocess.CalledProcessError:
+            print("[ERROR] Failed to pull Zeek Docker image")
+            return False
+
+    # Prepare Docker command
+    # Mount PCAP as read-only, work directory as read-write
+    pcap_abs = pcap_path.resolve()
+    work_abs = work_dir.resolve()
+
+    docker_cmd = [
+        "docker", "run", "--rm",
+        "-v", f"{pcap_abs}:/data/capture.pcap:ro",
+        "-v", f"{work_abs}:/zeek",
+        "-w", "/zeek",
+        "-e", "LogAscii::use_json=T",
+        "-e", "LogAscii::json_timestamps=JSON::TS_ISO8601",
+        ZEEK_DOCKER_IMAGE,
+        "-Cr", "/data/capture.pcap",
+        "LogAscii::use_json=T",
+        "LogAscii::json_timestamps=JSON::TS_ISO8601",
+        "policy/tuning/json-logs.zeek",
+        "protocols/ssl/ja3.zeek",
+        "frameworks/files/extract-all-files.zeek"
+    ]
+
+    print(f"[CMD] docker run zeek (output in {work_dir})")
+    try:
+        subprocess.run(docker_cmd, check=True)
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"[ERROR] Zeek Docker execution failed: {e}")
+        return False
 
 # ---------- parsers ----------
 def parse_http_log(log_path: pathlib.Path) -> Dict[str, Any]:
@@ -703,18 +737,25 @@ def generate_html_report(data: Dict[str, Any]) -> str:
     return html
 
 # ---------- core ----------
-def analyze(pcap, outdir, chunk=None, zeek_bin=None):
+def analyze(pcap, outdir, chunk=None):
     pcap_path = pathlib.Path(pcap).expanduser().resolve()
     ensure_file_readable(pcap_path, "PCAP")
     OUT = pathlib.Path(outdir).expanduser().resolve()
     safe_mkdir(OUT)
 
-    # binari
-    zeek = resolve_zeek_path(zeek_bin)
-    if not zeek:
-        print("[WARN] Zeek non trovato (usa --zeek /path/zeek o esporta ZEEK_PATH/ZEEK)")
-    else:
-        print(f"[INFO] Zeek: {zeek}")
+    # Check tools availability
+    use_zeek = USE_DOCKER_ZEEK
+    if use_zeek:
+        if not check_docker():
+            print("[WARN] Docker not available, Zeek analysis will be skipped")
+            print("[INFO] Install Docker: sudo ./install-tools.sh")
+            use_zeek = False
+        elif not check_zeek_docker_image():
+            print(f"[INFO] Zeek Docker image not found, pulling {ZEEK_DOCKER_IMAGE}...")
+            use_zeek = check_zeek_docker_image()  # Will attempt to pull
+        if use_zeek:
+            print(f"[INFO] Using Zeek via Docker: {ZEEK_DOCKER_IMAGE}")
+
     suricata = check_bin("suricata")
     tshark = check_bin("tshark")
 
@@ -744,21 +785,13 @@ def analyze(pcap, outdir, chunk=None, zeek_bin=None):
         safe_mkdir(work)
         p_abs = str(pathlib.Path(p).resolve())
 
-        # --- ZEEK (JSON + files) ---
-        if zeek:
-            env = os.environ.copy()
-            env["LogAscii::use_json"] = "T"
-            env["LogAscii::json_timestamps"] = "JSON::TS_ISO8601"
-            zcmd = [zeek, "-Cr", p_abs,
-                    "policy/tuning/json-logs.zeek",
-                    "protocols/ssl/ja3.zeek",
-                    "frameworks/files/extract-all-files.zeek"]
-            try:
-                run(zcmd, cwd=work, env=env)
-            except subprocess.CalledProcessError as e:
-                print(f"[WARN] Zeek fallito: {e}")
+        # --- ZEEK (JSON + files via Docker) ---
+        if use_zeek:
+            pcap_to_analyze = pathlib.Path(p_abs)
+            if not run_zeek_docker(pcap_to_analyze, work):
+                print(f"[WARN] Zeek Docker execution failed")
         else:
-            print("[WARN] Skip Zeek")
+            print("[WARN] Skip Zeek (Docker not available)")
 
         # --- SURICATA (EVE + filestore v2 via YAML) ---
         eve_dir = work / "suricata"; safe_mkdir(eve_dir)
@@ -982,13 +1015,15 @@ def analyze(pcap, outdir, chunk=None, zeek_bin=None):
 
 # ---------- cli ----------
 def main():
-    ap = argparse.ArgumentParser(description="Net-Hunt: beaconing + estrazione file da PCAP (no graph)")
-    ap.add_argument("pcap", help="Percorso PCAP")
-    ap.add_argument("-o", "--out", default="out", help="Directory output")
-    ap.add_argument("--chunk", type=int, default=None, help="Cut in N pacchetti per chunk (editcap)")
-    ap.add_argument("--zeek", help="Percorso binario zeek (se non nel PATH)")
+    ap = argparse.ArgumentParser(
+        description="NetHunt: Advanced PCAP analysis with beaconing detection, file extraction, and comprehensive reporting",
+        epilog="Zeek runs via Docker for easy deployment on Kali Linux. Ensure Docker is installed: sudo ./install-tools.sh"
+    )
+    ap.add_argument("pcap", help="Path to PCAP file to analyze")
+    ap.add_argument("-o", "--out", default="out", help="Output directory (default: out)")
+    ap.add_argument("--chunk", type=int, default=None, help="Split PCAP into chunks of N packets (requires editcap)")
     args = ap.parse_args()
-    analyze(args.pcap, args.out, chunk=args.chunk, zeek_bin=args.zeek)
+    analyze(args.pcap, args.out, chunk=args.chunk)
 
 if __name__ == "__main__":
     main()
