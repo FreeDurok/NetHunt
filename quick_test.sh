@@ -4,7 +4,7 @@
 echo "=== NetHunt Quick Test ==="
 echo ""
 
-PCAP="/home/user/NetHunt/2025-06-13-traffic-analysis-exercise.pcap"
+PCAP="/home/user/sec-projects/NetHunt/2025-06-13-traffic-analysis-exercise.pcap"
 OUT="/tmp/nethunt_test_$$"
 
 if [ ! -f "$PCAP" ]; then
