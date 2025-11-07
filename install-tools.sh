@@ -45,21 +45,25 @@ echo "  ✓ tcpflow installed - ensures complete file extraction from streams"
 
 echo "[7/7] Installing RITA (Real Intelligence Threat Analytics)..."
 if ! command -v rita &> /dev/null; then
-    echo "  Downloading RITA installer..."
+    echo "  Downloading RITA binary..."
     RITA_VERSION="v5.1.0"
-    RITA_INSTALLER="rita-${RITA_VERSION}-installer.tar.gz"
+    RITA_TARBALL="rita-${RITA_VERSION}.tar.gz"
 
     cd /tmp
-    wget -q "https://github.com/activecm/rita/releases/download/${RITA_VERSION}/${RITA_INSTALLER}" -O "${RITA_INSTALLER}"
-
-    if [ -f "${RITA_INSTALLER}" ]; then
+    # Download with timeout and show progress
+    if wget --timeout=30 --tries=2 "https://github.com/activecm/rita/releases/download/${RITA_VERSION}/${RITA_TARBALL}" -O "${RITA_TARBALL}" 2>&1 | grep -q "saved"; then
         echo "  Extracting and installing RITA..."
-        tar -xzf "${RITA_INSTALLER}"
+        tar -xzf "${RITA_TARBALL}"
         cd "rita-${RITA_VERSION}-installer"
-        ./install_rita.sh localhost
+        ./install_rita.sh localhost >/dev/null 2>&1
         cd /tmp
-        rm -rf "rita-${RITA_VERSION}-installer" "${RITA_INSTALLER}"
-        echo "  ✓ RITA installed"
+        rm -rf "rita-${RITA_VERSION}-installer" "${RITA_TARBALL}"
+
+        if command -v rita &> /dev/null; then
+            echo "  ✓ RITA installed successfully"
+        else
+            echo "  ✗ RITA installation failed - skipping (optional)"
+        fi
     else
         echo "  ✗ RITA download failed - skipping (optional)"
     fi
