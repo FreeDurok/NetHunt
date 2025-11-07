@@ -8,12 +8,12 @@ __pycache__/
 
 # NetHunt output directories
 # out/
-output/
-work_*/
-*_output/
+# output/
+# work_*/
+# *_output/
 
 # Logs
-*.log
+# *.log
 *.json.tmp
 
 # PCAP files (uncomment if you don't want to track them)
@@ -21,8 +21,8 @@ work_*/
 # *.pcapng
 
 # Suricata
-suricata.yaml
-minimal-suricata.yaml
+# suricata.yaml
+# minimal-suricata.yaml
 
 # Zeek
 .state/
