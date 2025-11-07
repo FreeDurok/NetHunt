@@ -100,17 +100,27 @@ def run_zeek_docker(pcap_path: pathlib.Path, work_dir: pathlib.Path) -> tuple[bo
             return False, "Failed to pull Docker image"
 
     # Prepare Docker command
-    # Mount PCAP as read-only, work directory as read-write
+    # Mount parent directory of PCAP and work directory
     pcap_abs = pcap_path.resolve()
     work_abs = work_dir.resolve()
+    pcap_parent = pcap_abs.parent
+    pcap_filename = pcap_abs.name
+
+    # Get current user's UID and GID for proper file permissions
+    import os
+    uid = os.getuid()
+    gid = os.getgid()
 
     docker_cmd = [
         "docker", "run", "--rm",
-        "-v", f"{pcap_abs}:/data/capture.pcap:ro",
+        "--user", f"{uid}:{gid}",
+        "-v", f"{pcap_parent}:/pcaps:ro",
         "-v", f"{work_abs}:/logs",
         "-w", "/logs",
         ZEEK_DOCKER_IMAGE,
-        "-Cr", "/data/capture.pcap",
+        "zeek",
+        "-C",  # Ignore checksums
+        "-r", f"/pcaps/{pcap_filename}",
         "LogAscii::use_json=T",
         "LogAscii::json_timestamps=JSON::TS_ISO8601",
         "policy/tuning/json-logs.zeek",
