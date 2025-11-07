@@ -24,13 +24,18 @@ def generate_html_report(data: Dict[str, Any]) -> str:
         sha = f.get("sha256", "")[:16]
         full_path = f.get('path', 'N/A')
         filename = full_path.split('/')[-1][:50]
-        # Make file path clickable with file:// protocol and add copy button
+        # Make file path clickable with file:// protocol
         path_html = f'<a href="file://{full_path}" title="{full_path}" class="file-link">{filename}</a>'
+        # Get source and destination IPs
+        src_ip = f.get('src_ip', 'N/A')
+        dst_ip = f.get('dest_ip', 'N/A')
         files_rows += f"""
         <tr>
             <td>{f.get('source', 'N/A')}</td>
             <td class="monospace">{path_html}</td>
             <td>{size_str}</td>
+            <td class="monospace">{src_ip}</td>
+            <td class="monospace">{dst_ip}</td>
             <td class="monospace" title="{f.get('sha256', '')}">{sha}...</td>
             <td>{f.get('magic', 'N/A')}</td>
         </tr>
@@ -384,15 +389,16 @@ def generate_html_report(data: Dict[str, Any]) -> str:
                     <strong>⚠️ Critical:</strong> {len(http_beacons)} HTTP beacon pattern(s) detected! Regular HTTP requests suggest C2 communication.
                 </div>
                 <p style="margin-bottom: 15px;">
-                    <strong>About HTTP Beaconing:</strong> Malware often communicates with Command & Control servers using regular HTTP requests at periodic intervals.
-                    Repeating JSON responses and POST requests with base64 data are common indicators of C2 traffic.
+                    <strong>About HTTP Beaconing:</strong> Malware often communicates with Command & Control servers using periodic HTTP requests with regular intervals and low jitter (coefficient of variation).
+                    This detection analyzes request timing patterns regardless of content type - it looks for repeated connections to the same host at consistent intervals.
+                    Common indicators include: repeated POST requests, similar time intervals between requests, and varying URIs to the same domain.
                 </p>
                 <table>
                     <thead>
                         <tr>
                             <th>Host</th>
                             <th>Avg Interval</th>
-                            <th>CV</th>
+                            <th>CV (Jitter)</th>
                             <th>Events</th>
                             <th>Methods</th>
                             <th>POST Reqs</th>
@@ -410,18 +416,24 @@ def generate_html_report(data: Dict[str, Any]) -> str:
             <!-- Extracted Files Section -->
             <div class="section">
                 <h2>📁 Extracted Files ({len(files)} unique files)</h2>
+                <div class="alert" style="background: #e7f3ff; border-left-color: #2196F3;">
+                    <strong>ℹ️ Note:</strong> Only files from unencrypted protocols (HTTP, FTP, SMB) can be extracted.
+                    Files transferred over HTTPS/TLS are encrypted and cannot be extracted, even though the SSL handshake metadata is visible in the logs.
+                </div>
                 <table>
                     <thead>
                         <tr>
                             <th>Source</th>
                             <th>Filename</th>
                             <th>Size</th>
+                            <th>From IP</th>
+                            <th>To IP</th>
                             <th>SHA256</th>
                             <th>Type</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {files_rows if files_rows else '<tr><td colspan="5" style="text-align:center;">No files extracted</td></tr>'}
+                        {files_rows if files_rows else '<tr><td colspan="7" style="text-align:center;">No files extracted</td></tr>'}
                     </tbody>
                 </table>
             </div>
