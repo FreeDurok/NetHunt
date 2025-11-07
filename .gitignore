@@ -17,7 +17,7 @@ __pycache__/
 *.json.tmp
 
 # PCAP files (uncomment if you don't want to track them)
-# *.pcap
+*.pcap
 # *.pcapng
 
 # Suricata

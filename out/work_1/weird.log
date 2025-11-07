@@ -1,5 +1,0 @@
-{"ts":"2025-06-13T15:33:55.715541Z","uid":"CnjS042CgYkJkxzDA8","id.orig_h":"10.6.13.133","id.orig_p":52241,"id.resp_h":"10.6.13.3","id.resp_p":53,"name":"DNS_unknown_opcode","addl":"5","notice":false,"peer":"zeek","source":"DNS"}
-{"ts":"2025-06-13T15:34:10.145465Z","uid":"Ckn3qU2jcc6SuusF8","id.orig_h":"10.6.13.133","id.orig_p":52442,"id.resp_h":"10.6.13.3","id.resp_p":59774,"name":"netlogon_dce_rpc_auth_type","addl":"68","notice":false,"peer":"zeek","source":"DCE_RPC"}
-{"ts":"2025-06-13T15:34:26.334362Z","uid":"CBTIN31BWycj7uSHUh","id.orig_h":"10.6.13.133","id.orig_p":52460,"id.resp_h":"23.198.7.180","id.resp_p":443,"name":"window_recision","notice":false,"peer":"zeek"}
-{"ts":"2025-06-13T15:36:14.368506Z","uid":"CBbsxr3mrhilRL6Zhg","id.orig_h":"10.6.13.133","id.orig_p":52520,"id.resp_h":"23.212.185.87","id.resp_p":443,"name":"window_recision","notice":false,"peer":"zeek"}
-{"ts":"2025-06-13T15:36:16.002170Z","uid":"CDzPWz2GfXMSvZwJ1e","id.orig_h":"10.6.13.133","id.orig_p":52526,"id.resp_h":"23.198.7.168","id.resp_p":443,"name":"window_recision","notice":false,"peer":"zeek"}
