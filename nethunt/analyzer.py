@@ -197,7 +197,8 @@ def analyze(pcap, outdir, chunk=None):
                 all_ssl_data["versions"][k] += v
 
         # Collect files and hashes
-        for base, source in [(work / "extracted", "zeek"),
+        for base, source in [(work / "extract_files", "zeek"),
+                             (work / "extracted", "zeek"),  # Fallback for different Zeek versions
                              (eve_dir / "files", "suricata"),
                              (work / "export_http", "tshark_http"),
                              (work / "export_ftp", "tshark_ftp"),

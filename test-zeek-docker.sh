@@ -48,6 +48,8 @@ echo "Running Docker command:"
 echo ""
 DOCKER_CMD="docker run --rm \
   --user $USER_ID:$GROUP_ID \
+  -e LogAscii::use_json=T \
+  -e LogAscii::json_timestamps=JSON::TS_ISO8601 \
   -v $PCAP_DIR:/pcaps:ro \
   -v $TEST_OUTPUT_ABS:/logs \
   -w /logs \
@@ -55,8 +57,6 @@ DOCKER_CMD="docker run --rm \
   zeek \
   -C \
   -r /pcaps/$PCAP_NAME \
-  LogAscii::use_json=T \
-  LogAscii::json_timestamps=JSON::TS_ISO8601 \
   policy/tuning/json-logs.zeek \
   frameworks/files/extract-all-files.zeek"
 

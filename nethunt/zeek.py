@@ -114,6 +114,8 @@ def run_zeek_docker(pcap_path: pathlib.Path, work_dir: pathlib.Path) -> tuple[bo
     docker_cmd = [
         "docker", "run", "--rm",
         "--user", f"{uid}:{gid}",
+        "-e", "LogAscii::use_json=T",
+        "-e", "LogAscii::json_timestamps=JSON::TS_ISO8601",
         "-v", f"{pcap_parent}:/pcaps:ro",
         "-v", f"{work_abs}:/logs",
         "-w", "/logs",
@@ -121,8 +123,6 @@ def run_zeek_docker(pcap_path: pathlib.Path, work_dir: pathlib.Path) -> tuple[bo
         "zeek",
         "-C",  # Ignore checksums
         "-r", f"/pcaps/{pcap_filename}",
-        "LogAscii::use_json=T",
-        "LogAscii::json_timestamps=JSON::TS_ISO8601",
         "policy/tuning/json-logs.zeek",
         "frameworks/files/extract-all-files.zeek"
         # Note: JA3 (protocols/ssl/ja3.zeek) requires additional package installation
