@@ -22,6 +22,55 @@ from .domain_filter import filter_legitimate_traffic, classify_url
 from .report import generate_html_report
 
 
+def organize_output(out_dir: pathlib.Path, pcap_chunks: list):
+    """
+    Organize output directory: move Zeek logs to zeek/ folder and clean temp files.
+
+    Args:
+        out_dir: Output directory path
+        pcap_chunks: List of chunk PCAP paths to remove
+    """
+    import shutil
+
+    # Create zeek logs directory
+    zeek_dir = out_dir / "zeek_logs"
+    safe_mkdir(zeek_dir)
+
+    # Move all .log files from work directories to zeek_logs/
+    for work_dir in out_dir.glob("work_*"):
+        if work_dir.is_dir():
+            for log_file in work_dir.glob("*.log"):
+                if log_file.is_file():
+                    # Create unique name if file already exists
+                    dest = zeek_dir / log_file.name
+                    counter = 1
+                    while dest.exists():
+                        dest = zeek_dir / f"{log_file.stem}_{counter}{log_file.suffix}"
+                        counter += 1
+                    shutil.move(str(log_file), str(dest))
+
+    # Clean up chunk PCAP files if they exist
+    if len(pcap_chunks) > 1:  # Only if chunking was used
+        for chunk_path in pcap_chunks:
+            chunk_file = pathlib.Path(chunk_path)
+            if chunk_file.exists() and chunk_file.parent == out_dir:
+                try:
+                    chunk_file.unlink()
+                except:
+                    pass
+
+    # Remove empty work directories
+    for work_dir in out_dir.glob("work_*"):
+        if work_dir.is_dir():
+            # Only remove if empty or contains only empty subdirs
+            try:
+                # Try to remove - will fail if not empty
+                if not any(work_dir.rglob("*")):
+                    shutil.rmtree(work_dir)
+            except:
+                pass
+
+
 def analyze(pcap, outdir, chunk=None):
     """Main analysis function"""
     pcap_path = pathlib.Path(pcap).expanduser().resolve()
@@ -202,6 +251,7 @@ def analyze(pcap, outdir, chunk=None):
         for base, source in [(work / "extract_files", "zeek"),
                              (work / "extracted", "zeek"),  # Fallback for different Zeek versions
                              (eve_dir / "files", "suricata"),
+                             (work / "export_tcpflow", "tcpflow"),
                              (work / "export_http", "tshark_http"),
                              (work / "export_ftp", "tshark_ftp"),
                              (work / "export_smb", "tshark_smb")]:
@@ -269,15 +319,22 @@ def analyze(pcap, outdir, chunk=None):
     files_list.sort(key=lambda x: x.get('size', 0), reverse=True)
     print("✓")
 
-    # Prepare report data
+    # Extract unique URLs from filtered requests (no duplicates)
+    filtered_urls = set()
+    for req in filtered_requests:
+        url = req.get("url")
+        if url:
+            filtered_urls.add(url)
+
+    # Prepare report data (using filtered requests)
     http_report = {
-        "urls": sorted(all_http_data["urls"]),
+        "urls": sorted(filtered_urls),  # Only URLs from filtered requests
         "requests_count": len(all_http_data["requests"]),
         "methods": dict(all_http_data["methods"].most_common()),
         "status_codes": dict(all_http_data["status_codes"].most_common()),
         "top_hosts": dict(all_http_data["hosts"].most_common(20)),
         "top_user_agents": dict(all_http_data["user_agents"].most_common(10)),
-        "requests": all_http_data["requests"][:100]
+        "requests": filtered_requests[:100]  # Show filtered requests in report
     }
 
     dns_report = {
@@ -326,6 +383,11 @@ def analyze(pcap, outdir, chunk=None):
     (OUT / "report.html").write_text(html_report)
     print("✓")
 
+    # Organize Zeek logs and clean up temporary files
+    print("  → Organizing output files...", end=" ", flush=True)
+    organize_output(OUT, pcaps)
+    print("✓")
+
     # Summary
     print(f"\n{'='*60}")
     print("Analysis Complete!")
@@ -339,5 +401,6 @@ def analyze(pcap, outdir, chunk=None):
     print(f"\nOutput directory: {OUT}")
     print("  • report.html - Interactive HTML report")
     print("  • report.json - Raw data in JSON format")
-    print("  • work_*/ - Extracted files and logs")
+    print("  • zeek_logs/ - Zeek analysis logs")
+    print("  • work_*/ - Extracted files organized by source")
     print(f"{'='*60}\n")

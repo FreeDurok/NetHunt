@@ -36,31 +36,33 @@ def parse_http_log(log_path: pathlib.Path) -> Dict[str, Any]:
             status = r.get("status_code")
             user_agent = r.get("user_agent", "")
 
-            # Determine protocol based on port
-            port = r.get("id.resp_p", 80)
-            protocol = "https" if port == 443 else "http"
-
-            # Build URL - handle hosts that already include port
+            # Build URL from host and URI
             if host and uri:
-                # Remove port from host if it's already there (format: host:port)
-                if ":" in host:
-                    host_clean = host.split(":")[0]
-                    # Use the port from the host field if present
-                    if len(host.split(":")) > 1:
+                # Check if host already contains protocol (proxy traffic)
+                if host.startswith("http://") or host.startswith("https://"):
+                    # Host already has protocol - just append URI
+                    url = f"{host}{uri}"
+                else:
+                    # Normal case - determine protocol from port
+                    port = r.get("id.resp_p", 80)
+                    protocol = "https" if port == 443 else "http"
+
+                    # Handle hosts with embedded port (format: host:port)
+                    if ":" in host:
+                        parts = host.split(":")
+                        host_clean = parts[0]
                         try:
-                            port = int(host.split(":")[1])
+                            port = int(parts[1])
                             protocol = "https" if port == 443 else "http"
                         except:
                             pass
-                    host = host_clean
+                        host = host_clean
 
-                # Build URL with proper protocol
-                if port in [80, 443]:
-                    # Standard ports - don't include in URL
-                    url = f"{protocol}://{host}{uri}"
-                else:
-                    # Non-standard port - include it
-                    url = f"{protocol}://{host}:{port}{uri}"
+                    # Build URL with proper protocol
+                    if port in [80, 443]:
+                        url = f"{protocol}://{host}{uri}"
+                    else:
+                        url = f"{protocol}://{host}:{port}{uri}"
 
                 urls.add(url)
                 http_requests.append({

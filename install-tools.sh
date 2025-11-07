@@ -15,10 +15,10 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-echo "[1/5] Updating package lists..."
+echo "[1/6] Updating package lists..."
 apt-get update -qq
 
-echo "[2/5] Installing Docker (for Zeek)..."
+echo "[2/6] Installing Docker (for Zeek)..."
 if ! command -v docker &> /dev/null; then
     echo "  Installing Docker..."
     apt-get install -y docker.io
@@ -29,16 +29,19 @@ else
     echo "  ✓ Docker already installed"
 fi
 
-echo "[3/5] Pulling Zeek Docker image..."
+echo "[3/6] Pulling Zeek Docker image..."
 docker pull zeek/zeek:latest
 echo "  ✓ Zeek image ready"
 
-echo "[4/5] Installing Suricata (IDS/IPS)..."
+echo "[4/6] Installing Suricata (IDS/IPS)..."
 apt-get install -y suricata
 
-echo "[5/5] Installing Tshark (Wireshark CLI)..."
+echo "[5/6] Installing Tshark (Wireshark CLI)..."
 apt-get install -y tshark wireshark-common
-echo "  ✓ Tshark installed with TCP stream reassembly support"
+
+echo "[6/6] Installing tcpflow (TCP stream reconstruction)..."
+apt-get install -y tcpflow
+echo "  ✓ tcpflow installed - ensures complete file extraction from streams"
 
 # Add current user to docker group (if not root)
 if [ -n "$SUDO_USER" ]; then
@@ -58,7 +61,8 @@ echo "Installed tools:"
 echo "  - Docker: $(docker --version 2>/dev/null || echo 'Not found')"
 echo "  - Zeek (Docker): $(docker images zeek/zeek --format '{{.Repository}}:{{.Tag}}' 2>/dev/null | head -1 || echo 'Not pulled')"
 echo "  - Suricata: $(which suricata 2>/dev/null || echo 'Not in PATH')"
-echo "  - Tshark: $(which tshark 2>/dev/null || echo 'Not in PATH') (with TCP reassembly)"
+echo "  - Tshark: $(which tshark 2>/dev/null || echo 'Not in PATH')"
+echo "  - tcpflow: $(which tcpflow 2>/dev/null || echo 'Not in PATH')"
 echo ""
 echo "Testing Zeek Docker container..."
 if docker run --rm zeek/zeek:latest --version 2>/dev/null | grep -q "zeek version"; then
