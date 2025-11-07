@@ -252,6 +252,8 @@ def analyze(pcap, outdir, chunk=None):
     # Deduplicate files
     print("\n  → Deduplicating files...", end=" ", flush=True)
     files_list = deduplicate_files(files_list)
+    # Sort files by size (largest first)
+    files_list.sort(key=lambda x: x.get('size', 0), reverse=True)
     print("✓")
 
     # Prepare report data
