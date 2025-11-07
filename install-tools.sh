@@ -50,10 +50,13 @@ if ! command -v rita &> /dev/null; then
     RITA_TARBALL="rita-${RITA_VERSION}.tar.gz"
 
     cd /tmp
-    # Download with timeout and show progress
-    if wget --timeout=30 --tries=2 "https://github.com/activecm/rita/releases/download/${RITA_VERSION}/${RITA_TARBALL}" -O "${RITA_TARBALL}" 2>&1 | grep -q "saved"; then
+    # Download with timeout (suppress output)
+    wget --timeout=30 --tries=2 -q "https://github.com/activecm/rita/releases/download/${RITA_VERSION}/${RITA_TARBALL}" -O "${RITA_TARBALL}"
+
+    # Check if download succeeded
+    if [ -f "${RITA_TARBALL}" ] && [ -s "${RITA_TARBALL}" ]; then
         echo "  Extracting and installing RITA..."
-        tar -xzf "${RITA_TARBALL}"
+        tar -xzf "${RITA_TARBALL}" 2>/dev/null
         cd "rita-${RITA_VERSION}-installer"
         ./install_rita.sh localhost >/dev/null 2>&1
         cd /tmp
@@ -66,6 +69,7 @@ if ! command -v rita &> /dev/null; then
         fi
     else
         echo "  ✗ RITA download failed - skipping (optional)"
+        rm -f "${RITA_TARBALL}"
     fi
 else
     echo "  ✓ RITA already installed"
