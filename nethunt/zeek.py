@@ -72,10 +72,10 @@ def run_zeek_native(zeek_bin: str, pcap_path: pathlib.Path, work_dir: pathlib.Pa
     env["LogAscii::use_json"] = "T"
     env["LogAscii::json_timestamps"] = "JSON::TS_ISO8601"
 
-    zcmd = [zeek_bin, "-Cr", str(pcap_path),
+    zcmd = [zeek_bin, "-C", "-r", str(pcap_path),
             "policy/tuning/json-logs.zeek",
-            "protocols/ssl/ja3.zeek",
             "frameworks/files/extract-all-files.zeek"]
+    # Note: JA3 (protocols/ssl/ja3.zeek) requires additional package installation
 
     try:
         subprocess.run(zcmd, check=True, cwd=work_dir, env=env, capture_output=True)
@@ -124,8 +124,8 @@ def run_zeek_docker(pcap_path: pathlib.Path, work_dir: pathlib.Path) -> tuple[bo
         "LogAscii::use_json=T",
         "LogAscii::json_timestamps=JSON::TS_ISO8601",
         "policy/tuning/json-logs.zeek",
-        "protocols/ssl/ja3.zeek",
         "frameworks/files/extract-all-files.zeek"
+        # Note: JA3 (protocols/ssl/ja3.zeek) requires additional package installation
     ]
 
     try:

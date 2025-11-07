@@ -58,7 +58,6 @@ DOCKER_CMD="docker run --rm \
   LogAscii::use_json=T \
   LogAscii::json_timestamps=JSON::TS_ISO8601 \
   policy/tuning/json-logs.zeek \
-  protocols/ssl/ja3.zeek \
   frameworks/files/extract-all-files.zeek"
 
 echo "$DOCKER_CMD"
