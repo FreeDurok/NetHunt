@@ -202,6 +202,7 @@ def analyze(pcap, outdir, chunk=None):
         for base, source in [(work / "extract_files", "zeek"),
                              (work / "extracted", "zeek"),  # Fallback for different Zeek versions
                              (eve_dir / "files", "suricata"),
+                             (work / "export_tcpflow", "tcpflow"),
                              (work / "export_http", "tshark_http"),
                              (work / "export_ftp", "tshark_ftp"),
                              (work / "export_smb", "tshark_smb")]:
