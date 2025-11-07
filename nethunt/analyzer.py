@@ -24,7 +24,7 @@ from .report import generate_html_report
 
 def organize_output(out_dir: pathlib.Path, pcap_chunks: list):
     """
-    Organize output directory: move Zeek logs to zeek/ folder and clean temp files.
+    Organize output directory: organize zeek logs and clean temp files.
 
     Args:
         out_dir: Output directory path
@@ -32,22 +32,20 @@ def organize_output(out_dir: pathlib.Path, pcap_chunks: list):
     """
     import shutil
 
-    # Create zeek logs directory
-    zeek_dir = out_dir / "zeek_logs"
-    safe_mkdir(zeek_dir)
-
-    # Move all .log files from work directories to zeek_logs/
+    # Organize each work directory: create zeek_logs subdirectory for .log files
     for work_dir in out_dir.glob("work_*"):
         if work_dir.is_dir():
-            for log_file in work_dir.glob("*.log"):
-                if log_file.is_file():
-                    # Create unique name if file already exists
-                    dest = zeek_dir / log_file.name
-                    counter = 1
-                    while dest.exists():
-                        dest = zeek_dir / f"{log_file.stem}_{counter}{log_file.suffix}"
-                        counter += 1
-                    shutil.move(str(log_file), str(dest))
+            zeek_logs_dir = work_dir / "zeek_logs"
+            log_files = list(work_dir.glob("*.log"))
+
+            if log_files:
+                safe_mkdir(zeek_logs_dir)
+                # Move .log files to zeek_logs subdirectory
+                for log_file in log_files:
+                    try:
+                        shutil.move(str(log_file), str(zeek_logs_dir / log_file.name))
+                    except:
+                        pass
 
     # Clean up chunk PCAP files if they exist
     if len(pcap_chunks) > 1:  # Only if chunking was used
@@ -58,17 +56,6 @@ def organize_output(out_dir: pathlib.Path, pcap_chunks: list):
                     chunk_file.unlink()
                 except:
                     pass
-
-    # Remove empty work directories
-    for work_dir in out_dir.glob("work_*"):
-        if work_dir.is_dir():
-            # Only remove if empty or contains only empty subdirs
-            try:
-                # Try to remove - will fail if not empty
-                if not any(work_dir.rglob("*")):
-                    shutil.rmtree(work_dir)
-            except:
-                pass
 
 
 def analyze(pcap, outdir, chunk=None):
@@ -401,6 +388,6 @@ def analyze(pcap, outdir, chunk=None):
     print(f"\nOutput directory: {OUT}")
     print("  • report.html - Interactive HTML report")
     print("  • report.json - Raw data in JSON format")
-    print("  • zeek_logs/ - Zeek analysis logs")
+    print("  • work_*/zeek_logs/ - Zeek analysis logs")
     print("  • work_*/ - Extracted files organized by source")
     print(f"{'='*60}\n")
