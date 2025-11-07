@@ -3,6 +3,7 @@ Log parsing functions for Zeek logs
 """
 
 import json
+import os
 import pathlib
 from collections import Counter
 from typing import Dict, Any, List
@@ -190,23 +191,44 @@ def parse_ssl_log(log_path: pathlib.Path) -> Dict[str, Any]:
 
 
 def deduplicate_files(files_list: List[Dict]) -> List[Dict]:
-    """Remove duplicate files by SHA256 and filter out empty/junk files"""
+    """Remove duplicate files by SHA256 and filter out empty/junk files.
+
+    Physically deletes duplicate files from disk - keeps only first occurrence
+    of each unique SHA256 hash.
+    """
     seen_hashes = set()
     deduplicated = []
+    deleted_count = 0
 
     for f in files_list:
         sha = f.get("sha256")
         size = f.get("size", 0)
+        file_path = f.get("path")
 
-        # Skip empty files
+        # Skip empty files - delete them from disk
         if size == 0:
+            if file_path and os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                    deleted_count += 1
+                except Exception:
+                    pass
             continue
 
-        # Skip duplicates
+        # Skip duplicates - delete them from disk
         if sha in seen_hashes:
+            if file_path and os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                    deleted_count += 1
+                except Exception:
+                    pass
             continue
 
         seen_hashes.add(sha)
         deduplicated.append(f)
+
+    if deleted_count > 0:
+        print(f"✓ Removed {deleted_count} duplicate/empty files from disk")
 
     return deduplicated

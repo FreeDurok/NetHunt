@@ -20,6 +20,7 @@ from .parsers import parse_http_log, parse_dns_log, parse_ssl_log, deduplicate_f
 from .beaconing import detect_beacons, detect_http_beacons
 from .domain_filter import filter_legitimate_traffic, classify_url
 from .report import generate_html_report
+from .rita import run_rita_import, run_rita_analysis
 
 
 def organize_output(out_dir: pathlib.Path, pcap_chunks: list):
@@ -97,9 +98,11 @@ def analyze(pcap, outdir, chunk=None):
 
     suricata = check_bin("suricata")
     tshark = check_bin("tshark")
+    rita = check_bin("rita")
 
     print(f"  {'✓' if suricata else '✗'} Suricata: {'yes' if suricata else 'not found'}")
     print(f"  {'✓' if tshark else '✗'} Tshark: {'yes' if tshark else 'not found'}")
+    print(f"  {'✓' if rita else '✗'} RITA: {'yes' if rita else 'not found'}")
     print("")
 
     # Chunking
@@ -375,6 +378,26 @@ def analyze(pcap, outdir, chunk=None):
     organize_output(OUT, pcaps)
     print("✓")
 
+    # Run RITA analysis on Zeek logs
+    if rita:
+        print("\n  → Running RITA threat analysis...", end=" ", flush=True)
+        rita_success = False
+        # Process each work directory with Zeek logs
+        for work_dir in OUT.glob("work_*"):
+            zeek_logs_dir = work_dir / "zeek_logs"
+            if zeek_logs_dir.exists():
+                dataset_name = f"nethunt_{work_dir.name}"
+                if run_rita_import(zeek_logs_dir, dataset_name):
+                    # Export RITA analysis results
+                    run_rita_analysis(dataset_name, OUT)
+                    rita_success = True
+
+        if rita_success:
+            print("✓")
+            print("     RITA analysis saved to: rita_analysis_*.csv")
+        else:
+            print("✗ (no Zeek logs found)")
+
     # Summary
     print(f"\n{'='*60}")
     print("Analysis Complete!")
@@ -390,4 +413,6 @@ def analyze(pcap, outdir, chunk=None):
     print("  • report.json - Raw data in JSON format")
     print("  • work_*/zeek_logs/ - Zeek analysis logs")
     print("  • work_*/ - Extracted files organized by source")
+    if rita:
+        print("  • rita_analysis_*.csv - RITA threat analysis results")
     print(f"{'='*60}\n")
